@@ -12,6 +12,8 @@ import (
 const (
 	PROJECT_NAME = "ENTER_YOUR_PROJECT_NAME_HERE"
 	SEPERATE_STR = "zones"
+	ZERO int64 = 0
+	ONE int64 = 1
 )
 
 var (
@@ -104,6 +106,7 @@ func main() {
 		}else{
 			fmt.Println("KO")
 		}
+
 		/*
 		buf, err := mgr.MarshalJSON()
 		if err != nil {
@@ -112,6 +115,16 @@ func main() {
 		}
 
 		fmt.Println(string(buf))
+		fmt.Println("==================\n")
 		*/
+	}
+
+	// resize group manager to zero
+	for _, chosen := range instGrps {
+		fmt.Printf("Resize %s/%s/%s to 0\n", chosen.projet, chosen.zone, chosen.manager)
+		_, err := grpMgrSVC.Resize(chosen.projet, chosen.zone, chosen.manager, ZERO).Do()
+		if err != nil {
+			fmt.Println("Resize to zero err: ", err)
+		}
 	}
 }
