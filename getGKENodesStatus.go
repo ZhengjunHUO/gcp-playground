@@ -12,13 +12,13 @@ import (
 const (
 	PROJECT_NAME = "ENTER_YOUR_PROJECT_NAME_HERE"
 	SEPERATE_STR = "zones"
-	ZERO int64 = 0
-	ONE int64 = 1
+	ZERO   int64 = 0
+	ONE    int64 = 1
 )
 
 var (
-	labelKey = "clickhouse"
-	labelVal = "2"
+	labelKey = "foo"
+	labelVal = "bar"
 )
 
 type instanceGroup struct {
@@ -65,6 +65,10 @@ func main() {
 		}
 	}
 
+	if targetCluster == nil {
+		fmt.Printf("No cluster matches the label [%s=%s] ! Quit...\n", labelKey, labelVal)
+		return
+	}
 	/* Print selected cluster's detail
 	buf, err := targetCluster.MarshalJSON()
 	if err != nil {
@@ -77,20 +81,8 @@ func main() {
 
 	// Find a list of instance group associated to the cluster
 	instGrps := []instanceGroup{}
-	if targetCluster != nil {
-		/*
-		for _, nodepool := range targetCluster.NodePools {
-			for _, str := nodepool.InstanceGroupUrls {
-				strs := strings.Split(str[strings.Index(str, SEPERATE_STR)+len(SEPERATE_STR)+1:], "/")
-				if len(strs) < 3 {
-					fmt.Printf("Can't get instance groups' info correctly, got: %v\n", strs)
-					continue
-				}
-				instGrps = append(instGrps, instanceGroup{PROJECT_NAME, strs[0], strs[2]})
-			}
-		}
-		*/
-		for _, str := range targetCluster.InstanceGroupUrls {
+	for _, nodepool := range targetCluster.NodePools {
+		for _, str := range nodepool.InstanceGroupUrls {
 			// need Go 1.18
 			//_, after, _ := strings.Cut(str, SEPERATE_STR)
 			strs := strings.Split(str[strings.Index(str, SEPERATE_STR)+len(SEPERATE_STR)+1:], "/")
@@ -101,6 +93,16 @@ func main() {
 			instGrps = append(instGrps, instanceGroup{PROJECT_NAME, strs[0], strs[2]})
 		}
 	}
+	/* Deprecated
+	for _, str := range targetCluster.InstanceGroupUrls {
+		strs := strings.Split(str[strings.Index(str, SEPERATE_STR)+len(SEPERATE_STR)+1:], "/")
+		if len(strs) < 3 {
+			fmt.Printf("Can't get instance groups' info correctly, got: %v\n", strs)
+			continue
+		}
+		instGrps = append(instGrps, instanceGroup{PROJECT_NAME, strs[0], strs[2]})
+	}
+	*/
 
 	// Get a compute service
 	cmpsvc, err := compute.NewService(ctx)
@@ -127,7 +129,7 @@ func main() {
 			fmt.Println("KO")
 		}
 
-		/*
+		/* Print InstanceGroupManager's detail
 		buf, err := mgr.MarshalJSON()
 		if err != nil {
 			fmt.Println("Marshall error: ", err)
