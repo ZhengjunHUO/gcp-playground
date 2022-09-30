@@ -57,8 +57,8 @@ func (g *GKECluster) FindCluster(labelKey, labelVal string) {
 	*/
 }
 
-func (g *GKECluster) ListInstanceGroups() []InstanceGroup {
-	instGrps := []InstanceGroup{}
+func (g *GKECluster) ListInstanceGroups() []*InstanceGroup {
+	instGrps := []*InstanceGroup{}
 
 	if g.Cluster == nil {
 		fmt.Println("[WARNING] Wait for a non-nil cluster !")
@@ -74,7 +74,7 @@ func (g *GKECluster) ListInstanceGroups() []InstanceGroup {
 				fmt.Printf("Can't get instance groups' info correctly, got: %v\n", strs)
 				continue
 			}
-			instGrps = append(instGrps, InstanceGroup{g.ProjectName, strs[0], strs[2]})
+			instGrps = append(instGrps, &InstanceGroup{g.ProjectName, strs[0], strs[2], nil})
 		}
 	}
 	/* Deprecated
@@ -84,7 +84,7 @@ func (g *GKECluster) ListInstanceGroups() []InstanceGroup {
 			fmt.Printf("Can't get instance groups' info correctly, got: %v\n", strs)
 			continue
 		}
-		instGrps = append(instGrps, instanceGroup{PROJECT_NAME, strs[0], strs[2]})
+		instGrps = append(instGrps, &instanceGroup{PROJECT_NAME, strs[0], strs[2]})
 	}
 	*/
 

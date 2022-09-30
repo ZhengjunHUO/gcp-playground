@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"context"
 
-	"google.golang.org/api/compute/v1"
-
 	"github.com/ZhengjunHUO/gcp-playground/pkg"
 )
 
@@ -15,12 +13,14 @@ const (
 )
 
 var (
-	PROJECT_NAME	= "ENTER_YOUR_PROJECT_NAME_HERE"
-	labelKey	= "foo"
-	labelVal	= "bar"
+	PROJECT_NAME	= "opensee-ci"
+	labelKey	= "env"
+	labelVal	= "k8s-vault"
 )
 
 func main() {
+	/* Use case 1 */
+
 	gkecluster := &pkg.GKECluster{ProjectName: PROJECT_NAME, Ctx: context.Background(),}
 
 	gkecluster.FindCluster(labelKey, labelVal)
@@ -29,46 +29,26 @@ func main() {
 		return
 	}
 
+	//fmt.Println(gkecluster.Cluster.ResourceLabels)
 	instGrps := gkecluster.ListInstanceGroups()
-
-
-	// Get a compute service
-	ctx := context.Background()
-	cmpsvc, err := compute.NewService(ctx)
-	if err != nil {
-		fmt.Println("compute NewService error: ", err)
-		return
-	}
-
-	// Get an InstanceGroupManagersService
-	grpMgrSVC := compute.NewInstanceGroupManagersService(cmpsvc)
-
 	for _, v := range instGrps {
-		// Get InstanceGroupManager
-		mgr, err := grpMgrSVC.Get(v.Projet, v.Zone, v.Manager).Do()
-		if err != nil {
-			fmt.Println("Get instance group manager error: ", err)
-			continue
+		v.GetInstanceGroupManager()
+		if v.Igm != nil {
+			fmt.Printf("[INFO] Found %s/%s/%s with size %d\n", v.Project, v.Zone, v.Manager, v.Igm.TargetSize)
 		}
-
-		fmt.Printf("Found %s/%s/%s with size %d. Status: ", v.Projet, v.Zone, v.Manager, mgr.TargetSize)
-		if mgr.Status.IsStable {
-			fmt.Println("OK")
-		}else{
-			fmt.Println("KO")
-		}
-
-		/* Print InstanceGroupManager's detail
-		buf, err := mgr.MarshalJSON()
-		if err != nil {
-			fmt.Println("Marshall error: ", err)
-			continue
-		}
-
-		fmt.Println(string(buf))
-		fmt.Println("==================\n")
-		*/
 	}
+
+
+	/* Use case 2 
+
+	//flt := fmt.Sprintf("(labels.%s=%s)", labelKey, labelVal)
+	flt := "(name=gke-vault*)"
+	igms := pkg.FilterInstanceGroupManager(PROJECT_NAME, flt)
+
+	for _, v := range igms {
+		fmt.Println(v.Name)
+	}
+	*/
 
 	/* resize group manager to zero
 	for _, chosen := range instGrps {
