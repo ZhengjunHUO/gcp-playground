@@ -14,7 +14,7 @@ func FilterInstanceGroupManager(projectName, filter string) (rslt []*compute.Ins
 	ctx := context.Background()
 	cmpsvc, err := compute.NewService(ctx)
 	if err != nil {
-		fmt.Println("compute NewService error: ", err)
+		fmt.Println("[WARN] compute NewService error: ", err)
 		return
 	}
 
@@ -25,7 +25,7 @@ func FilterInstanceGroupManager(projectName, filter string) (rslt []*compute.Ins
 	// Do filtering
 	instanceGroupManagerAggregatedList, err := instanceGroupManagersAggregatedListCall.Filter(filter).Do()
 	if err != nil {
-		fmt.Println("Filter InstanceGroupManagerList failed : ", err)
+		fmt.Println("[WARN] Filter InstanceGroupManagerList failed : ", err)
 		return
 	}
 
@@ -38,4 +38,13 @@ func FilterInstanceGroupManager(projectName, filter string) (rslt []*compute.Ins
 	}
 
 	return
+}
+
+func (ig *InstanceGroup) ResizeTo(n int64) error {
+	_, err := ig.IgmSvc.Resize(ig.Project, ig.Zone, ig.Manager, n).Do()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

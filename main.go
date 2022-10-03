@@ -37,6 +37,17 @@ func main() {
 		}
 	}
 
+	/* resize all group manager to zero
+	for _, grp := range instGrps {
+		err := grp.ResizeTo(ZERO)
+		if err != nil {
+			fmt.Printf("[WARN] %s/%s/%s: Resize to %v err: %v\n", grp.Project, grp.Zone, grp.Manager, n, err)
+		}else{
+			fmt.Printf("[INFO] %s/%s/%s: Resize to %v err: %v\n", grp.Project, grp.Zone, grp.Manager, n, err)
+		}
+	}
+	*/
+
 
 	/* Use case 2 
 
@@ -46,16 +57,6 @@ func main() {
 
 	for _, v := range igms {
 		fmt.Println(v.Name)
-	}
-	*/
-
-	/* resize group manager to zero
-	for _, chosen := range instGrps {
-		fmt.Printf("Resize %s/%s/%s to 0\n", chosen.projet, chosen.zone, chosen.manager)
-		_, err := grpMgrSVC.Resize(chosen.projet, chosen.zone, chosen.manager, ZERO).Do()
-		if err != nil {
-			fmt.Println("Resize to zero err: ", err)
-		}
 	}
 	*/
 }

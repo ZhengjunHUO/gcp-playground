@@ -53,7 +53,7 @@ func (g *GKECluster) FindCluster(labelKey, labelVal string) {
 	// Get a ListClustersResponse contains list of cluster objects in ALL zones with detail under PROJECT_NAME
 	resp, err := clusterSVC.List(g.ProjectName, "-").Do()
 	if err != nil {
-		fmt.Println("List cluster error: ", err)
+		fmt.Println("[WARN] List cluster error: ", err)
 		return
 	}
 
@@ -90,7 +90,7 @@ func (g *GKECluster) ListInstanceGroups() []*InstanceGroup {
 	instGrps := []*InstanceGroup{}
 
 	if g.Cluster == nil {
-		fmt.Println("[WARNING] Wait for a non-nil cluster !")
+		fmt.Println("[WARN] Wait for a non-nil cluster !")
 		return instGrps
 	}
 
@@ -103,7 +103,7 @@ func (g *GKECluster) ListInstanceGroups() []*InstanceGroup {
 			//_, after, _ := strings.Cut(str, SEPERATE_STR)
 			strs := strings.Split(str[strings.Index(str, SEPERATE_STR)+len(SEPERATE_STR)+1:], "/")
 			if len(strs) < 3 {
-				fmt.Printf("Can't get instance groups' info correctly, got: %v\n", strs)
+				fmt.Printf("[WARN] Can't get instance groups' info correctly, got: %v\n", strs)
 				continue
 			}
 
@@ -113,7 +113,7 @@ func (g *GKECluster) ListInstanceGroups() []*InstanceGroup {
 				fmt.Println("[WARN] Get instance group manager error: ", err)
 			}
 
-			instGrps = append(instGrps, &InstanceGroup{g.ProjectName, strs[0], strs[2], mgr})
+			instGrps = append(instGrps, &InstanceGroup{g.ProjectName, strs[0], strs[2], mgr, grpMgrSVC})
 		}
 	}
 	/* Deprecated

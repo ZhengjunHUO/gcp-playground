@@ -19,5 +19,6 @@ type InstanceGroup struct {
 	Zone    string
 	Manager string
 	Igm	*compute.InstanceGroupManager
+	IgmSvc	*compute.InstanceGroupManagersService
 }
 
