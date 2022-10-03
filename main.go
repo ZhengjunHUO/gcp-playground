@@ -43,7 +43,7 @@ func main() {
 		if err != nil {
 			fmt.Printf("[WARN] %s/%s/%s: Resize to %v err: %v\n", grp.Project, grp.Zone, grp.Manager, n, err)
 		}else{
-			fmt.Printf("[INFO] %s/%s/%s: Resize to %v err: %v\n", grp.Project, grp.Zone, grp.Manager, n, err)
+			fmt.Printf("[INFO] %s/%s/%s resized to %v.\n", grp.Project, grp.Zone, grp.Manager, n)
 		}
 	}
 	*/
