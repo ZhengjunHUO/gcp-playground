@@ -10,6 +10,8 @@ type GKECluster struct {
 	ProjectName	string
 	Ctx		context.Context
 	Cluster		*container.Cluster
+	CtnService	*container.Service
+	VmService	*compute.Service
 }
 
 type InstanceGroup struct {

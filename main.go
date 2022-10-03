@@ -20,8 +20,8 @@ var (
 
 func main() {
 	/* Use case 1 */
-
-	gkecluster := &pkg.GKECluster{ProjectName: PROJECT_NAME, Ctx: context.Background(),}
+	ctx := context.Background()
+	gkecluster := pkg.NewGKECluster(PROJECT_NAME, ctx).WithComputeService(ctx)
 
 	gkecluster.FindCluster(labelKey, labelVal)
 	if gkecluster.Cluster == nil {
@@ -32,7 +32,6 @@ func main() {
 	//fmt.Println(gkecluster.Cluster.ResourceLabels)
 	instGrps := gkecluster.ListInstanceGroups()
 	for _, v := range instGrps {
-		v.GetInstanceGroupManager()
 		if v.Igm != nil {
 			fmt.Printf("[INFO] Found %s/%s/%s with size %d\n", v.Project, v.Zone, v.Manager, v.Igm.TargetSize)
 		}

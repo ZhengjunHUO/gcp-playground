@@ -39,27 +39,3 @@ func FilterInstanceGroupManager(projectName, filter string) (rslt []*compute.Ins
 
 	return
 }
-
-
-func (ig *InstanceGroup) GetInstanceGroupManager() {
-	// Get a compute service
-	ctx := context.Background()
-	cmpsvc, err := compute.NewService(ctx)
-	if err != nil {
-		fmt.Println("compute NewService error: ", err)
-		return
-	}
-
-	// Get an InstanceGroupManagersService
-	grpMgrSVC := compute.NewInstanceGroupManagersService(cmpsvc)
-
-	// Get InstanceGroupManager
-	mgr, err := grpMgrSVC.Get(ig.Project, ig.Zone, ig.Manager).Do()
-	if err != nil {
-		fmt.Println("[WARN] Get instance group manager error: ", err)
-	}
-
-	ig.Igm = mgr
-	return
-}
-
